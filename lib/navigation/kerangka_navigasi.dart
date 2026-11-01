@@ -6,6 +6,7 @@ import '../models/layanan_model.dart';
 import '../pages/halaman_beranda.dart';
 import '../pages/halaman_layanan.dart';
 import '../pages/halaman_warga.dart';
+import '../widgets/theme_toggle_button.dart';
 
 class KerangkaNavigasi extends StatefulWidget {
   const KerangkaNavigasi({super.key});
@@ -30,7 +31,7 @@ class _KerangkaNavigasiState extends State<KerangkaNavigasi> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Nusantara Cerdas Mobile'),
-        elevation: 2,
+        actions: const [ThemeToggleButton()],
       ),
       drawer: layarLebar ? null : _buatDrawer(),
       body: layarLebar

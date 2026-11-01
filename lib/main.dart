@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit/favorit_cubit.dart';
 import 'cubit/pengajuan_cubit.dart';
+import 'cubit/theme_cubit.dart';
 import 'navigation/app_routes.dart';
+import 'theme/app_theme.dart';
 
 void main() {
   runApp(
@@ -11,6 +13,7 @@ void main() {
       providers: [
         BlocProvider(create: (_) => FavoritCubit()),
         BlocProvider(create: (_) => PengajuanCubit()),
+        BlocProvider(create: (_) => ThemeCubit()),
       ],
       child: const NusantaraCerdasApp(),
     ),
@@ -22,13 +25,19 @@ class NusantaraCerdasApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Nusantara Cerdas Mobile',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
-      initialRoute: AppRoutes.beranda,
-      routes: AppRoutes.daftarRoute(),
-      onGenerateRoute: AppRoutes.bentukRoute,
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        return MaterialApp(
+          title: 'Nusantara Cerdas Mobile',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeMode,
+          initialRoute: AppRoutes.beranda,
+          routes: AppRoutes.daftarRoute(),
+          onGenerateRoute: AppRoutes.bentukRoute,
+        );
+      },
     );
   }
 }

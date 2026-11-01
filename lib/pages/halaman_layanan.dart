@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../cubit/favorit_cubit.dart';
 import '../models/layanan_model.dart';
 import '../navigation/app_routes.dart';
+import '../widgets/layanan_card.dart';
 
 class HalamanLayanan extends StatelessWidget {
   const HalamanLayanan({super.key});
@@ -55,13 +54,17 @@ class HalamanLayanan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return DefaultTabController(
       length: 3,
       child: Column(
         children: [
-          const TabBar(
-            labelColor: Colors.indigo,
-            tabs: [
+          TabBar(
+            labelColor: theme.colorScheme.primary,
+            unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
+            indicatorColor: theme.colorScheme.primary,
+            tabs: const [
               Tab(text: 'Perizinan'),
               Tab(text: 'Kesehatan'),
               Tab(text: 'Transportasi'),
@@ -91,38 +94,15 @@ class HalamanLayanan extends StatelessWidget {
       itemCount: filtered.length,
       itemBuilder: (context, index) {
         final item = filtered[index];
-        return Card(
-          elevation: 2,
-          margin: const EdgeInsets.symmetric(vertical: 6),
-          child: ListTile(
-            leading: Text(item.ikon, style: const TextStyle(fontSize: 28)),
-            title: Text(
-              item.nama,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(item.deskripsi),
-            trailing: BlocBuilder<FavoritCubit, Set<String>>(
-              builder: (context, favoritSet) {
-                final isFav = favoritSet.contains(item.nama);
-                return IconButton(
-                  icon: Icon(
-                    isFav ? Icons.star : Icons.star_border,
-                    color: isFav ? Colors.amber : Colors.grey,
-                  ),
-                  onPressed: () {
-                    context.read<FavoritCubit>().toggleFavorit(item.nama);
-                  },
-                );
-              },
-            ),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                AppRoutes.detailLayanan,
-                arguments: item,
-              );
-            },
-          ),
+        return LayananCard(
+          layanan: item,
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              AppRoutes.detailLayanan,
+              arguments: item,
+            );
+          },
         );
       },
     );

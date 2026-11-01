@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubit/favorit_cubit.dart';
 import '../cubit/pengajuan_cubit.dart';
+import '../cubit/theme_cubit.dart';
 import '../models/layanan_model.dart';
 
 class HalamanWarga extends StatelessWidget {
@@ -10,12 +11,34 @@ class HalamanWarga extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final themeMode = context.watch<ThemeCubit>().state;
+    final isDark = themeMode == ThemeMode.dark;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Text(
+        Card(
+          child: SwitchListTile(
+            title: const Text(
+              'Mode Gelap (Dark Theme)',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(isDark ? 'Tema Gelap Aktif' : 'Tema Terang Aktif'),
+            secondary: Icon(
+              isDark ? Icons.dark_mode : Icons.light_mode,
+              color: theme.colorScheme.primary,
+            ),
+            value: isDark,
+            onChanged: (_) => context.read<ThemeCubit>().toggle(),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
           'Layanan Favorit Saya',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8),
         BlocBuilder<FavoritCubit, Set<String>>(
@@ -36,9 +59,8 @@ class HalamanWarga extends StatelessWidget {
                     title: Text(nama),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete_outline, color: Colors.red),
-                      onPressed: () {
-                        context.read<FavoritCubit>().batalTandai(nama);
-                      },
+                      onPressed: () =>
+                          context.read<FavoritCubit>().batalTandai(nama),
                     ),
                   ),
                 );
@@ -46,10 +68,12 @@ class HalamanWarga extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(height: 24),
-        const Text(
+        const SizedBox(height: 16),
+        Text(
           'Keranjang Pengajuan Aktif',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8),
         BlocBuilder<PengajuanCubit, List<ItemPengajuan>>(
@@ -81,9 +105,9 @@ class HalamanWarga extends StatelessWidget {
                           Icons.remove_circle_outline,
                           color: Colors.red,
                         ),
-                        onPressed: () {
-                          context.read<PengajuanCubit>().hapusPengajuan(index);
-                        },
+                        onPressed: () => context
+                            .read<PengajuanCubit>()
+                            .hapusPengajuan(index),
                       ),
                     ),
                   );

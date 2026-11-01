@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubit/pengajuan_cubit.dart';
 import '../models/layanan_model.dart';
+import '../widgets/primary_button.dart';
 
 class HalamanDetailLayanan extends StatefulWidget {
   final Layanan layanan;
@@ -29,9 +30,7 @@ class _HalamanDetailLayananState extends State<HalamanDetailLayanan> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'Layanan "${widget.layanan.nama}" berhasil ditambahkan ke keranjang pengajuan!',
-        ),
+        content: Text('Layanan "${widget.layanan.nama}" berhasil diajukan!'),
         backgroundColor: Colors.green,
       ),
     );
@@ -41,6 +40,8 @@ class _HalamanDetailLayananState extends State<HalamanDetailLayanan> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.layanan.nama)),
       body: Padding(
@@ -57,37 +58,24 @@ class _HalamanDetailLayananState extends State<HalamanDetailLayanan> {
             const SizedBox(height: 16),
             Text(
               'Bidang: ${widget.layanan.bidang}',
-              style: const TextStyle(
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.primary,
                 fontWeight: FontWeight.bold,
-                color: Colors.indigo,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               widget.layanan.deskripsi,
-              style: const TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurface,
+              ),
             ),
             const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo,
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: _isSending ? null : _prosesPengajuan,
-                child: _isSending
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text('Ajukan Permohonan'),
-              ),
+            PrimaryButton(
+              label: 'Ajukan Permohonan',
+              icon: Icons.send,
+              isLoading: _isSending,
+              onPressed: _prosesPengajuan,
             ),
           ],
         ),
